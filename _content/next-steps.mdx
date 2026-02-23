@@ -1,0 +1,95 @@
+---
+title: "Three Ways to Complete the Assignment"
+nav_title: "Next Steps"
+sidebar_position: 3
+tags: ["assignment", "guide"]
+description: "Three approaches to building your prompt chain — from a simple chat conversation to a Python notebook to fully custom code."
+---
+
+# Three Ways to Complete the Assignment
+
+You've seen what happens when you generate lyrics from scores alone. Now you need to build a prompt chain that does better — one that preserves the poetic texture the spider chart compresses away.
+
+Here are three ways to do that, from simplest to most involved. Pick the one that matches your comfort level and ambition.
+
+---
+
+## Option 1: Conversational Chat
+
+**Best for:** Getting started quickly, or if you want to focus on the writing rather than the code.
+
+You don't need to write any code to build a prompt chain. You can do the whole thing as a conversation in a chat interface — Gemini, Claude, or ChatGPT all work.
+
+The key is to **do it in stages**, saving each step's output before moving to the next:
+
+1. **Paste each poem** and ask the model to score it on your traits (same as the web tool). Note the scores.
+2. For each poem, ask: *"Extract the 3–5 most characteristic phrases from this poem. Describe its formal moves, emotional arc, and recurring sounds. Be specific and quote the text."*
+3. Once you have 3+ poems analyzed, paste all the texture analyses together and ask: *"Synthesize a 150-word voice profile for this poet from these analyses."*
+4. Finally, paste the voice profile + scores and ask: *"Write a love song in this poet's style."*
+5. Refine: paste the draft back and add specific feedback — *"The chorus is too abstract. Revise with a concrete image from the poems."*
+
+**For your essay:** Save your prompts at each step. You'll need to include them and explain why you made each choice.
+
+---
+
+## Option 2: Python Notebook
+
+**Best for:** Students who want a more structured workflow, the ability to run and re-run steps, and something reproducible to submit.
+
+If you did the **Ancient Robots** section work, you already have everything you need: your OpenAI API key is already set up in Colab Secrets, and you've used the same `client.chat.completions.create()` pattern before. This notebook uses the same key and the same SDK — just a different task.
+
+The notebook below walks you through the full chain, step by step. Run each cell, paste your poems, and it will handle the API calls and display the results.
+
+<a
+  href="/api/download-notebook"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginTop: '16px',
+    marginBottom: '8px',
+    padding: '12px 24px',
+    background: '#7c3aed',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  Download Notebook (.ipynb) →
+</a>
+
+### Adding the notebook to your course folder in Google Drive
+
+1. Click the download link above — the file `complit126x-love-songs.ipynb` will save to your Downloads folder.
+2. Go to [drive.google.com](https://drive.google.com) and navigate to your **complit126x** folder.
+3. Click **New → File upload** and select the downloaded `.ipynb` file.
+4. Double-click the uploaded file — it will open in **Google Colab**.
+5. In Colab, click the **🔑 Secrets** icon in the left sidebar. Your `OPENAI_API_KEY` should already be there from the Ancient Robots workshop — just make sure **Notebook access** is toggled ON. If you need to add it fresh, paste in your OpenAI key.
+6. Run the cells from top to bottom. The first cell installs the required package.
+
+**What's in the notebook:**
+- Step 0: Define your traits
+- Step 1: Add a poem → analyze → extract texture → save to pool *(repeat for each poem)*
+- Step 2: Synthesize a voice profile across your poem pool
+- Step 3: Generate lyrics with the full chain
+- Step 4: Generate from scores only — compare the two outputs
+- Going Further: experiments to try, submission checklist
+
+---
+
+## Option 3: Advanced
+
+**Best for:** Students who want to build something custom — a frontend tool, a more complex pipeline, integrations with other tools, or an MCP-powered workflow.
+
+If you want to go further than the notebook — building your own web app, using the Anthropic SDK directly in Python, setting up MCP servers for your own tools, or doing something we haven't thought of yet — **reach out to us at the Learning Lab** for custom support.
+
+We can help with:
+- Building a frontend (like this one) tailored to your workflow
+- Designing a more complex multi-step chain
+- Integrating with other APIs (music generation, image generation, etc.)
+- Setting up local development with the Anthropic or OpenAI SDKs
+- MCP servers and agent-based approaches
+
+This is the "bring us your wildest idea" option. The Learning Lab's job is to help you execute it.
