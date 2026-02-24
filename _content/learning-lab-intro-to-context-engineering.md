@@ -130,7 +130,7 @@ Before the workshop session, you'll use the [Poem Personality Analyzer](/) to do
 
 5. **Reflect**: What is missing? What did the compression lose? What would you need to give the model to get closer to your poet's actual voice?
 
-Bring your spider chart, your generated lyrics, and your reflections to the workshop. We'll use them as the starting point for building a prompt chain together.
+Bring your generated lyrics and your reflections to the workshop. We'll use them as the starting point for building a prompt chain together.
 
 ---
 

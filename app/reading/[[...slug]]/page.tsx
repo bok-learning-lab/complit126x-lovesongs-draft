@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import { compile, run } from '@mdx-js/mdx';
+import remarkGfm from 'remark-gfm';
 import * as runtime from 'react/jsx-runtime';
 import { getDoc, getAllDocPaths, getContentNavigation } from '../../../lib/content';
 import { DocsLayout } from '../../../components/docs-layout';
@@ -33,7 +34,7 @@ export default async function ReadingPage({
 
   // Skip the overview — go straight to the first reading
   if (slug.length === 0) {
-    redirect('/reading/learning-lab-intro-to-context-engineering');
+    redirect('/reading/overview');
   }
 
   const doc = getDoc(slug);
@@ -46,6 +47,7 @@ export default async function ReadingPage({
   try {
     const compiled = await compile(doc.content, {
       outputFormat: 'function-body',
+      remarkPlugins: [remarkGfm],
     });
     const mod = await run(String(compiled), {
       ...(runtime as Parameters<typeof run>[1]),

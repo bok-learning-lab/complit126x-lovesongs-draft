@@ -20,7 +20,7 @@ export function DocsSidebar({ nav, onNavigate }: DocsSidebarProps) {
     <div className="h-full overflow-y-auto p-5 flex flex-col gap-6">
       {/* Back link */}
       <Link
-        href="/"
+        href="/analyzer"
         onClick={onNavigate}
         className="flex items-center gap-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
       >
@@ -38,10 +38,10 @@ export function DocsSidebar({ nav, onNavigate }: DocsSidebarProps) {
         <nav className="space-y-0.5">
           {/* Overview / README */}
           <Link
-            href="/reading"
+            href="/reading/overview"
             onClick={onNavigate}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${
-              isActive('/reading')
+              isActive('/reading/overview')
                 ? 'bg-purple-900/40 text-purple-300 font-medium'
                 : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/60'
             }`}

@@ -1,0 +1,28 @@
+---
+source_file: "Anne Sexton, “Just Once”.docx"
+source_type: docx
+converted: 2026-02-23
+confidence: high
+retention_pct: 100.0
+source_words: 110
+output_words: 110
+---
+Just Once
+
+By Anne Sexton
+
+Just once I knew what life was for.
+In Boston, quite suddenly, I understood;
+walked there along the Charles River,
+watched the lights copying themselves,
+all neoned and strobe-hearted, opening
+their mouths as wide as opera singers;
+counted the stars, my little campaigners,
+my scar daisies, and knew that I walked my love
+on the night green side of it and cried
+my heart to the eastbound cars and cried
+my heart to the westbound cars and took
+my truth across a small humped bridge
+and hurried my truth, the charm of it, home
+and hoarded these constants into morning
+only to find them gone.
