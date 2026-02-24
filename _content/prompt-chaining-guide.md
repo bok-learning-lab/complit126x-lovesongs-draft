@@ -3,7 +3,7 @@ title: "Prompt Chaining: A Practical Guide"
 nav_title: "Prompt Chaining Guide"
 sidebar_position: 2
 tags: ["workshop", "prompt chaining", "python", "code"]
-description: "A step-by-step guide to building a prompt chain that generates love song lyrics with richer context than scores alone."
+description: "How to design a prompt chain for this assignment — operations, combinations, and why there's no canonical sequence."
 ---
 
 # Prompt Chaining: A Practical Guide
@@ -12,316 +12,169 @@ description: "A step-by-step guide to building a prompt chain that generates lov
 
 ---
 
-## The Core Idea
+## There Is No Template
 
-A prompt chain is a sequence of API calls where **the output of each call becomes part of the input for the next one**.
+A prompt chain is a sequence of calls where the output of one step becomes part of the input for the next. That's the whole definition. What those steps do, in what order, how many there are, whether they loop — none of that is fixed.
 
-You've already used the API for single-step tasks: send a poem, get back an analysis. Chaining extends this — each step enriches the context for what follows.
+**There is no canonical chain for this assignment.** The sequence in the Python notebook is one starting point — a reasonable skeleton that you are expected to modify, extend, or replace entirely. The only real constraints are what code can do and what language models can actually do well. Within those limits, you are free.
 
-```
-Poem → [Score]    → trait values
-Poem → [Extract]  → specific phrases and images
-             ↓ repeat for 3+ poems
-     [Synthesize] → shared context
-     [Generate]   → lyrics (full context)
-     [Compare]    → lyrics (scores only)
-```
-
-Each arrow is a separate API call doing one focused thing. The final output is better than anything a single prompt can produce — and comparing the last two steps shows you exactly why.
+There is almost no way to do this wrong. As long as you are combining operations and the work of *reading* your poet is genuinely yours, your chain is doing what it's supposed to do. If your chain produces something that surprises you — an output you couldn't have gotten from the web tool on the first page — it's working.
 
 ---
 
-## Setup
+## The Operations
 
-```python
-from openai import OpenAI
-import json, re, os
+Every step in a chain is one of a small number of atomic operations. **A chain is a sequence of them.** They combine in any order, any number of times.
 
-try:
-    from google.colab import userdata
-    api_key = userdata.get('OPENAI_API_KEY')
-except (ImportError, Exception):
-    api_key = os.environ.get('OPENAI_API_KEY')
+| Operation | What it does | Example instruction |
+|---|---|---|
+| **Score** | Assign numerical values across defined traits | *"Score each trait 1–10, return JSON with one-sentence reasoning"* |
+| **Extract** | Pull specific elements from text | *"List the 5 phrases that feel most distinctively like this poet"* |
+| **Annotate** | You add a judgment or reason to something extracted | *(no model call — you write this)* |
+| **Summarize** | Compress multiple inputs into a shorter form | *"Write a 50-word description of this poet's emotional range"* |
+| **Generate** | Produce new text from accumulated context | *"Write a verse using only the imagery in this profile"* |
+| **Vary** | Produce N alternatives | *"Write three choruses, each with a different formal approach"* |
+| **Critique** | Identify weaknesses in a draft | *"What is the weakest line — the one that sounds least like this poet?"* |
+| **Judge** | Select the best from N candidates | *"Which of these three drafts best captures the voice? Explain."* |
+| **Rewrite** | Revise a draft against a constraint | *"Rewrite with no adjectives"* — though see below for who does this |
+| **Route** | Decide what happens next | *"Does this draft need revision? Answer YES or NO."* |
 
-client = OpenAI(api_key=api_key)
-poem_pool = []
-```
-
----
-
-## Step 0: Define Your Traits
-
-Decide which dimensions to track. Edit the list for your poet — 4–6 traits works well. Use the same list for every poem.
-
-```python
-traits = [
-    {"name": "Melancholy",     "description": "sadness, longing, or wistfulness"},
-    {"name": "Romanticism",    "description": "love, passion, or deep emotional connection"},
-    {"name": "Nature Imagery", "description": "the natural world as metaphor, symbol, or setting"},
-    {"name": "Mortality",      "description": "death, time passing, or impermanence"},
-    {"name": "Optimism",       "description": "hopeful outlook, positive resolution, or uplift"},
-]
-```
+The **Annotate** step is always done by you. So is **Rewrite** — at least once.
 
 ---
 
-## Step 1: Add a Poem → Score → Extract → Save
+## A Starting Point (Pseudocode)
 
-Repeat this block for each poem in your pool (aim for 3+).
+The Python notebook implements this sequence. It's a starting point, not an answer. Read it as a structure, not a recipe.
 
-### Paste your poem
-
-```python
-POEM = """
-Shall I compare thee to a summer's day?
-Thou art more lovely and more temperate...
-"""
-
-POEM_TITLE = "Sonnet 18"
-POET_NAME  = "William Shakespeare"
 ```
+FOR EACH poem in your pool (aim for 3+):
 
-### Score it
+  SCORE:
+    input  → poem text, your trait list
+    ask    → "score each trait 1–10, return JSON with one-sentence reasoning"
+    output → scores{}
 
-```python
-trait_list = "\n".join(f"- {t['name']}: {t['description']}" for t in traits)
+  EXTRACT:
+    input  → poem text
+    ask    → "list 5 phrases or lines that feel most distinctively like this poet"
+    output → candidate phrases[]
 
-prompt = f"""Score this poem on each trait from 1 to 10.
-Return as JSON: {{"analysis": [{{"trait": "name", "score": 7, "reasoning": "one sentence"}}]}}
+  ANNOTATE (you — not the model):
+    from candidate phrases, pick the ones that feel right
+    for each: write one sentence — WHY this line, in your own words
+    output → annotated_quotes[]
 
-Poem:
-\"\"\"{POEM}\"\"\"
 
-Traits:
-{trait_list}"""
+AVERAGE scores across your pool:
+  compute → averaged trait values
 
-response = client.responses.create(model="gpt-4o", input=prompt)
 
-# Strip markdown code fences if the model wraps the JSON
-raw = re.sub(r'^```\w*\n?|\n?```$', '', response.output_text.strip())
-scores_data = json.loads(raw)
+BUILD YOUR CONTEXT OBJECT:
+  input  → annotated_quotes[], averaged scores, anything else you choose
+  output → context_block (a string — see next section for what this can be)
 
-for item in scores_data["analysis"]:
-    bar = "█" * item["score"] + "░" * (10 - item["score"])
-    print(f"  {item['trait']:<20} {bar}  {item['score']}/10  — {item['reasoning']}")
-```
 
-### Extract its texture
+GENERATE:
+  input  → context_block
+  ask    → "write a verse, chorus, and bridge in this style"
+  output → first_draft
 
-This is the step the spider chart skips — asking the model to identify the *specific language* that makes this poem feel like itself.
 
-```python
-prompt = f"""Read this poem and extract its poetic texture.
+JUDGE:
+  input  → first_draft, your annotated_quotes[]
+  ask    → "what is the weakest line — the one that sounds least like this poet?"
+  output → critique
 
-1. Characteristic phrases: Quote 3–5 specific lines most distinctive of this voice.
-2. Formal moves: How does it open? What turn does it take? How does it close?
-3. Emotional arc: What feeling does it begin in, and where does it arrive?
-4. Sound and rhythm: Any recurring sounds, rhythmic patterns, or structural habits?
 
-Be specific. Quote the actual text.
+REWRITE (you — not the model):
+  read   → critique + your original poems
+  decide → what to put in place of the weak line, and why
+  output → revised_draft
 
-Poem:
-\"\"\"{POEM}\"\"\""""
 
-texture_response = client.responses.create(model="gpt-4o", input=prompt)
-texture = texture_response.output_text
-print(texture)
-```
+COMPARE (required — this is the core of your essay):
+  GENERATE (scores only):
+    input  → averaged scores, nothing else
+    ask    → "write a love song with these trait scores"
+    output → scores_only_draft
 
-### Save to pool
-
-```python
-poem_pool.append({
-    "title":   POEM_TITLE,
-    "poet":    POET_NAME,
-    "poem":    POEM,
-    "scores":  scores_data["analysis"],
-    "texture": texture,
-})
-
-print(f"Saved '{POEM_TITLE}' — pool has {len(poem_pool)} poem(s)")
-```
-
-Go back to **Paste your poem** and repeat. Once you have 3+, continue below.
-
----
-
-## Step 2: Build Shared Context
-
-Average the scores across your pool and synthesize a single description of the poet's voice from all the texture analyses.
-
-The variable here is called `poet_profile` — but it's just a named chunk of text you're going to reuse downstream. You could build it differently: a list of images, a set of rules, a description of the meter. This particular version asks for a 150-word prose description, which works well as a generation prompt. Yours can be whatever you think will be most useful.
-
-```python
-# Average scores
-trait_totals = {}
-for entry in poem_pool:
-    for item in entry["scores"]:
-        trait_totals.setdefault(item["trait"], []).append(item["score"])
-
-averaged = {t: sum(s) / len(s) for t, s in trait_totals.items()}
-
-# Collect all texture analyses
-all_textures = "\n\n---\n\n".join(
-    f"From '{e['title']}':\n{e['texture']}" for e in poem_pool
-)
-
-# Build the shared context
-prompt = f"""I've analyzed {len(poem_pool)} poems by {poem_pool[0]['poet']}.
-
-Here are the texture analyses:
-
-{all_textures}
-
-Write a 150-word profile of this poet's voice: characteristic imagery, recurring themes,
-emotional territory, and formal habits. Quote actual phrases from the poems."""
-
-synth_response = client.responses.create(model="gpt-4o", input=prompt)
-poet_profile = synth_response.output_text
-print(poet_profile)
+  read both outputs side by side:
+  → which uses more concrete imagery?
+  → which sounds more like your poet?
+  → what, specifically, did the chain add?
+  → which steps mattered most — and how do you know?
 ```
 
 ---
 
-## Step 3: Generate Lyrics with Full Context
+## On Building Context
 
-Now you pass everything — averaged scores, the poet profile, and the raw texture — into the generation step.
+The notebook uses a variable called `poet_profile` — a 150-word prose description the model synthesizes from texture analyses. It works. It is also the lazy version: you asked the model to decide what matters.
 
-```python
-score_summary = "\n".join(f"- {t}: {s:.1f}/10" for t, s in averaged.items())
+The `poet_profile` is numbers-but-with-words. It compresses your close reading into a generic paragraph the model will treat approximately the same way it treats the scores. The more interesting move is to build context that reflects your actual judgment about this poet.
 
-prompt = f"""Write a new love song inspired by {poem_pool[0]['poet']}'s style.
+Some alternatives — any of these can be your "context object":
 
-Emotional profile (averaged across {len(poem_pool)} poems, 1–10 scale):
-{score_summary}
+- Lines you selected and typed yourself, with your own brief reason for each
+- A list of 10 images the model is **allowed** to use (and no others)
+- Constraints you wrote: *"end every stanza with a question," "no adjectives in the chorus," "always address the subject as 'you'"*
+- The raw poem text pasted directly — no synthesis, no compression
+- Multiple separate variables that each feed into the generation step for a different reason
+- A JSON object with whatever fields you decide are meaningful
 
-Poet's voice:
-{poet_profile}
-
-Texture and phrases from the poems:
-{all_textures}
-
-Write original song lyrics: a verse, a chorus, and a bridge.
-Do NOT copy lines from the poems — write something new that sounds like it comes from the same place."""
-
-gen_response = client.responses.create(model="gpt-4o", input=prompt)
-lyrics_full = gen_response.output_text
-print(lyrics_full)
-```
+The only requirement: whatever you build must actually appear in a later step's prompt. If your context object isn't in the generation call, it isn't doing work.
 
 ---
 
-## Step 4: Compare — Scores Only vs. Full Chain
+## Designing Your Own Sequence
 
-Generate a second version using *only* the averaged scores — nothing else. This is what the web tool produces.
-
-```python
-prompt = f"""Write a love song with these trait scores (1–10 scale):
-
-{score_summary}
-
-Write complete song lyrics: a verse, a chorus, and a bridge."""
-
-scores_only_response = client.responses.create(model="gpt-4o", input=prompt)
-print(scores_only_response.output_text)
-```
-
-Read the two outputs side by side:
-
-- Which uses more concrete imagery?
-- Which sounds more like your poet?
-- What exactly did the chain add that the scores couldn't?
-
-These observations are the core of your essay.
-
----
-
-## Designing Your Chain
-
-The four-step chain above is one configuration — not the canonical one. Think of building a chain like writing an outline: you pick the moves you need, in the order you need them.
-
-The mechanics below are the vocabulary. **A chain is a sequence of them.** The interesting design question is which sequence suits your poet and your goal.
-
-Some example sequences:
+Once you've run the starting chain, redesign it. Some directions:
 
 | Goal | Sequence |
 |---|---|
-| Get one solid draft | Extract → Summarize → Generate |
-| Pick the best of several approaches | Extract → Generate × 3 → Judge |
-| Refine until it sounds right | Extract → Generate → Critique → Rewrite (repeat) |
-| Explore different forms | Extract → Summarize → Generate × 3 (ballad / spoken word / duet) |
-| Accumulate context across many poems | Extract × 5 → Synthesize → Generate |
-| Route on quality | Extract → Generate → Score → if score < 7: Rewrite |
+| Explore different forms for your album | Generate × 3 (ballad / spoken word / second person) → Judge |
+| Raise the floor through iteration | Generate → Critique → you Rewrite → Generate again (2–3 loops) |
+| Separate what you extract | Extract: imagery → Extract: sound and syntax → both into Generate |
+| Skip model synthesis entirely | Annotate (you write the context) → Generate |
+| Force a formal constraint | Rewrite [constraint: no adjectives] → Rewrite [constraint: second person] |
+| Branch on whether it's working | Generate → Score → if score < 7: loop back to Rewrite |
+| Let drafts compete | Generate × 3 → Judge → you pick the winner and explain why |
 
-There's no formula. **What matters is that each step hands the next one something it couldn't produce alone.** If a step's output isn't used by any later step, it's not doing work.
-
-### A bank of mechanics
-
-Every step is one of a small set of atomic operations. Combine them in any order:
-
-| Mechanic | What it does | Example instruction |
-|---|---|---|
-| **Extract** | Pull structured data from text | *"Return the five most distinctive images as a list"* |
-| **Summarize** | Compress while preserving signal | *"Write a 50-word portrait of this poet's emotional range"* |
-| **Rewrite** | Change register, voice, or constraint | *"Rewrite this draft as if performed at a funeral"* |
-| **Generate** | Produce new text from context | *"Write a verse using only the imagery in this profile"* |
-| **Vary** | Produce N alternatives | *"Write three different choruses, each formally distinct"* |
-| **Score** | Assign numerical values | *"Rate this draft on specificity (1–10) and emotional range (1–10)"* |
-| **Judge** | Select the best from N candidates | *"Which of these three drafts best captures the poet's voice? Explain."* |
-| **Critique** | Generate actionable feedback | *"What is the weakest image here? How would you revise it?"* |
-| **Synthesize** | Merge multiple inputs into one | *"Combine these analyses into a single voice profile"* |
-| **Route** | Decide what happens next | *"Does this draft need revision? Answer YES or NO."* |
-
-### Two patterns worth knowing
-
-**Generate multiple, then judge:**
-
-```python
-drafts = []
-for i in range(3):
-    prompt = f"""Write a chorus inspired by {poem_pool[0]['poet']}.
-
-{poet_profile}
-
-Attempt {i+1} — use a different formal approach each time."""
-    r = client.responses.create(model="gpt-4o", input=prompt)
-    drafts.append(r.output_text)
-
-judge_prompt = "Here are three draft choruses:\n\n"
-for i, d in enumerate(drafts):
-    judge_prompt += f"--- Draft {i+1} ---\n{d}\n\n"
-judge_prompt += f"Which best captures {poem_pool[0]['poet']}'s voice? Explain briefly, then reproduce the best one."
-
-result = client.responses.create(model="gpt-4o", input=judge_prompt)
-print(result.output_text)
-```
-
-**Iterative refinement:**
-
-```python
-draft = lyrics_full  # from Step 3
-
-for round_num in range(2):
-    prompt = f"""This is a draft lyric inspired by {poem_pool[0]['poet']}:
-
-\"\"\"{draft}\"\"\"
-
-Identify the single weakest line — the one that sounds most generic, least like this poet.
-Then rewrite the full draft with that line replaced."""
-
-    r = client.responses.create(model="gpt-4o", input=prompt)
-    draft = r.output_text
-    print(f"--- After revision {round_num + 1} ---\n{draft}\n")
-```
+The question worth asking about each step: *what does this step provide that the previous step couldn't?* If a step's output isn't needed by anything downstream, it's not doing work.
 
 ---
 
-## A Note on Debugging
+## The Comparison Step Is Your Essay
 
-When the chain produces weak output, the process of diagnosing it is part of the work: read carefully, identify what information the step failed to provide, revise accordingly. You can even run this as an explicit step — ask the model to identify what a given output lacked and what a better prompt would have specified. That's just another link in the chain.
+The assignment started with the web tool: paste poems, get scores, generate lyrics from numbers alone. Your chain should end with a return to that baseline — generate a second version using *only* the averaged scores, no poem text, no annotations, nothing else.
+
+Read the two outputs side by side. The differences between them are your essay. Not "the chain is better" (though it probably is) — but *why*, specifically. Which step added what? What did your annotated quotes contribute that the model's extracted phrases couldn't? What did your rewrite change that the model's critique identified but couldn't fix?
+
+The comparison is evidence. The essay is the argument you build from it.
 
 ---
 
-*For the intellectual history behind these ideas — Calvino's combinatorial machine, Flusser's open game, Pask's feedback loops — see the [appendix](/reading/appendix-open-game).*
+## The Judge and Rewrite Steps Are Required
+
+Every submission should include at least one **Judge** step and at least one moment where **you** make a revision.
+
+The Judge step: pass two or more drafts (or a draft against your annotated quotes from the poems) and ask the model to identify what's weakest, most generic, or least characteristic of this poet.
+
+The Rewrite step: take the critique, return to the poems, and revise the line yourself. Do not ask the model to rewrite its own critique — that's just asking it to self-evaluate, which is not the same thing. The act of choosing what to replace a weak line with, drawing on your actual reading, is what the assignment is testing. That move has to come from you.
+
+---
+
+## Almost Nothing Is Wrong
+
+The one failure mode is treating the notebook as a template and adding two steps under duress.
+
+Your chain does not need to look like anyone else's. It does not need to follow the order in the pseudocode above. It does not need a `poet_profile` or a texture extraction step or even a synthesis step at all. What it needs is for the **Annotate** and **Rewrite** steps to be genuinely yours — evidence that you read the poems, made judgments, and brought those judgments into the chain.
+
+If you do that, there's almost no way to get this wrong.
+
+---
+
+*The Python code for all of this is in the [notebook](/reading/next-steps). For the intellectual history — Calvino, Flusser, Pask — see the [appendix](/reading/appendix-open-game).*
 
 *Back to: [Learning Lab Intro to Context Engineering](/reading/learning-lab-intro-to-context-engineering)*
