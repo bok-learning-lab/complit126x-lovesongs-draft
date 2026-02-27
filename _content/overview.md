@@ -1,55 +1,47 @@
 ---
-title: "Workshop Overview"
+title: "Pre-Workshop Overview"
 nav_title: "Overview"
 sidebar_position: 0
+phase: 1
 description: "What this workshop is for and how it fits into the unit on voice, style, and form."
 ---
 
 # Love Songs at the Learning Lab
 
-*Unit II: Voice, Style, and Form — 3/4 session*
+*Unit II: Voice, Style, and Form — Pre-Workshop*
+
+
+This unit has been asking — through Whitman, Dickinson, Lerner — what it means to write in a way that is distinctly yours. Not just the words you choose but the way you arrange them: the syntax, the line breaks, the recurring images, the formal habits that accumulate into something a reader recognizes as *you* before they see your name.
+
+Voice isn't one dimension of a poem. It's the whole operation — word choice, structure, rhythm, what gets said and what gets left out, which images recur and which don't. It is, in the terms this unit has been developing, the entire shape of a writer's attention.
+
+For this workshop, we are going to try to operationalize that question. Not to answer it — the unit's readings suggest that's impossible — but to design a *process* that attempts it, fails in instructive ways, and in failing, tells you something precise about what "voice" actually consists of.
 
 ---
 
-## What This Is For
+The move from description to process — from "what is this?" to "what sequence of steps gets me closer to it?" — is not unique to AI. Every "making" practice (where you produce something complex enough to require more than one step, or more than one person) has invented different frameworks to solve this problem.
 
-The central question of this unit is one that poets and critics have circled for centuries without exhausting: what is a writer's voice? Not the pitch or timbre of a speaking voice, but the quality Ben Lerner is after in *The Hatred of Poetry* — the thing that makes a poem feel as though it could only have come from one particular person, from one particular arrangement of experience and attention and habit of mind.
-
-This workshop asks that question from an unusual angle: not by writing poems, but by trying to get a machine to write in the style of someone else. The machine will, in important and instructive ways, fail. Understanding exactly how it fails — and what it takes to make it fail less completely — is the point.
+What we call "prompt chaining" is another version of this. You have inputs (poems, observations, instructions), a sequence of operations (score, extract, annotate, generate, judge, revise), and an output that depends on the quality and specificity of every step. The difference is that some of the steps are now executed by a language model — which is fast, capable, and completely unable to decide what matters. That last part is your job.
 
 ---
 
-## The Arc
+Before the workshop you'll work through three short demos. Each one tries to capture voice by a different means — and each one falls short in a different, instructive way. Start with the first one below.
 
-You will move through the following steps today and over the next week.
-
-**Step 1 — Poem Personality Analyzer** *(the web tool on this site)*
-
-Feed poems by your chosen poet into the spider chart tool. The tool extracts numerical scores across several dimensions: melancholy, romanticism, nature imagery, and so on. These scores are a representation — a kind of portrait in numbers.
-
-**Step 2 — Generate a first draft from scores only**
-
-Using only those numbers — no poem text, no quotations, no specific images — the tool generates song lyrics that match the emotional profile. Read the output carefully. It will probably feel generic: in the right mood, but not quite like anyone in particular.
-
-**Step 3 — Read**
-
-Two short documents explain why that happens and what to do about it:
-
-- [Learning Lab Intro to Context Engineering](/reading/learning-lab-intro-to-context-engineering) — the conceptual frame
-- [Prompt Chaining Guide](/reading/prompt-chaining-guide) — the practical method, with code
-
-**Step 4 — Build your chain**
-
-The [Next Steps](/reading/next-steps) page describes three approaches for the actual assignment, from guided conversation in a chat interface to a Python notebook. Pick one that fits your skill level and ambition.
-
----
-
-## Why This, for This Unit
-
-The unit has been asking, through Whitman and Dickinson and Lerner and the rest, what it means to have a voice — to write in a way that is distinctively, recognizably yours, even as that voice is assembled from everything you have read and heard and lived. Lerner's argument (compressed somewhat violently) is that poetry fails at this: it promises an ideal communication of experience and always falls short. The poem is never the thing it was reaching for.
-
-The machine's failure is a related one. Asked to generate in the style of a poet from numerical abstractions alone, it produces something in the right register but without specificity — without the actual images, the syntactic habits, the formal moves that make a voice a voice. The numbers are accurate in a limited sense, but they are not sufficient. What they leave out is exactly what close reading attends to.
-
-Prompt chaining is a method for recovering some of what the numbers omit. It is not a solution to the problem — the machine cannot become Anne Sexton or Frank O'Hara — but the process of designing the chain requires you to articulate, precisely, what you think makes a particular voice distinctive. That articulation is itself a form of close reading, conducted under unusual pressure.
-
-Italo Calvino, writing in 1967 on the relationship between literature and combinatorial machines, argued that literature is "a combinatorial game that pursues its possibilities to the extreme consequences, even beyond the author's intentions." The machine does exactly this: it combines with remarkable fluency. Your job in this assignment is to determine which combinations matter — which syntax, which image, which formal move is distinctively the move of this writer and not some other. That determination is itself a form of close reading. 
+<a
+  href="/analyzer"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginTop: '16px',
+    padding: '12px 24px',
+    background: '#7c3aed',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  Demo 1: The Spider Chart →
+</a>

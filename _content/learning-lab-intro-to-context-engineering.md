@@ -2,6 +2,7 @@
 title: "Learning Lab Intro to Context Engineering"
 nav_title: "Intro to Context Engineering"
 sidebar_position: 1
+phase: 1
 tags: ["reading", "context engineering", "prompt chaining"]
 description: "What does an LLM actually see? How context shapes output — and what that means for writing love songs with AI."
 ---

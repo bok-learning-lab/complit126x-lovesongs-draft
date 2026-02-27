@@ -9,12 +9,14 @@ export interface ContentItem {
   title: string;
   path: string;
   position: number;
+  phase: number;
 }
 
 export interface DocMetadata {
   title?: string;
   nav_title?: string;
   sidebar_position?: number;
+  phase?: number;
   tags?: string[];
   description?: string;
 }
@@ -42,7 +44,7 @@ export function getContentNavigation(): ContentItem[] {
 
     const slug = file.replace(/\.(mdx?)$/, '');
     // Skip folder index files and the overview (handled as a special sidebar item)
-    if (slug === 'README' || slug === 'index' || slug === 'overview') continue;
+    if (slug === 'README' || slug === 'index' || slug === 'overview' || slug === 'workshop-overview') continue;
 
     const filePath = path.join(CONTENT_ROOT, file);
     const raw = fs.readFileSync(filePath, 'utf-8');
@@ -54,6 +56,7 @@ export function getContentNavigation(): ContentItem[] {
       title: meta.nav_title || meta.title || slugToTitle(slug),
       path: slug,
       position: meta.sidebar_position ?? 999,
+      phase: meta.phase ?? 1,
     });
   }
 

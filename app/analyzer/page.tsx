@@ -164,9 +164,13 @@ export default function PoemPersonalityPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-100">Poem Personality Analyzer</h1>
-        <p className="text-zinc-400 mt-2">
-          Analyze poems across custom traits and compare them
+        <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-3">Demo 1 — Pre-Workshop</p>
+        <h1 className="text-3xl font-bold text-zinc-100">The Spider Chart</h1>
+        <p className="text-zinc-400 mt-3 max-w-2xl leading-relaxed">
+          Score poems across traits you define, then generate lyrics from those scores alone — no poem text, no quotations, no author&apos;s name. Just the numbers.
+        </p>
+        <p className="text-zinc-500 mt-2 max-w-2xl text-sm leading-relaxed">
+          This is roughly what music recommendation systems do: a song becomes a point in trait-space, and the system finds other songs nearby. Run it and see what comes out. The output will probably feel like it&apos;s in the right mood — without sounding like anyone in particular. That&apos;s the point.
         </p>
       </header>
 
@@ -382,19 +386,19 @@ export default function PoemPersonalityPage() {
             </div>
           )}
 
-          {/* Reading CTA */}
+          {/* Next Demo CTA */}
           <div className="mt-12 pt-10 border-t border-zinc-800">
             <a
-              href="/reading/learning-lab-intro-to-context-engineering"
+              href="/demo-sonnet"
               className="group flex items-center justify-between w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-purple-700 rounded-xl px-8 py-7 transition-all"
             >
               <div>
-                <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">Next</p>
+                <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">Demo 2</p>
                 <p className="text-xl font-bold text-zinc-100 mb-1">
-                  Learning Lab Intro to Context Engineering
+                  Stuffing the Prompt
                 </p>
                 <p className="text-sm text-zinc-400">
-                  Why did this happen? What gets lost when poems become numbers — and how does prompt chaining close the gap?
+                  Skip the abstraction — feed poems directly and see what comes out.
                 </p>
               </div>
               <span className="text-2xl text-zinc-500 group-hover:text-purple-400 transition-colors ml-6 shrink-0">→</span>

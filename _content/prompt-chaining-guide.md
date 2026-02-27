@@ -1,14 +1,45 @@
 ---
-title: "Prompt Chaining: A Practical Guide"
-nav_title: "Prompt Chaining Guide"
+title: "Workshop"
+nav_title: "Workshop"
 sidebar_position: 2
+phase: 2
 tags: ["workshop", "prompt chaining", "python", "code"]
-description: "How to design a prompt chain for this assignment — operations, combinations, and why there's no canonical sequence."
+description: "The workshop session: reviewing the pre-workshop demos, frameworks for your chain, and a practical guide to building it."
 ---
 
-# Prompt Chaining: A Practical Guide
+# Workshop
 
-*Supplement to "Learning Lab Intro to Context Engineering"*
+*Unit II: Voice, Style, and Form — Workshop Session*
+
+---
+
+## Where We Left Off
+
+Before this session, you ran the spider chart and saw what a purely numerical representation of a poem produces when used to generate new text: something in the right emotional register, but without specificity. You tried feeding sonnets directly into a prompt, and you heard generated text read aloud in a synthesized voice.
+
+The through-line across all three demos: the output works as a mood, not as a voice. The numbers capture *dimensions* of a poem — how melancholic it is, how romantic — without capturing the specific images, syntactic habits, and formal moves that make those qualities feel like one particular writer's. That gap is real. Closing it is what prompt chaining is for.
+
+Context engineering and prompt chaining are not magic. They are sequences of focused operations — each one doing one thing, each one passing something to the next. The question for today is: which operations, in which order, for your poet?
+
+---
+
+## Frameworks *(to be completed in class)*
+
+Before you start building, it helps to have a skeleton — a framework for how to arrange your chain. Frameworks from other fields give you a starting vocabulary: structures already tested for moving raw material through staged refinement.
+
+We'll look at several in class. For now, placeholders:
+
+- **[Framework 1]** — *[placeholder]*
+- **[Framework 2]** — *[placeholder]*
+- **[Framework 3]** — *[placeholder]*
+
+Each framework is a skeleton. You'll slot your chosen mechanics into it, then decide where it loops, branches, or hands control back to you. Plan it on paper first — cards, diagrams, whatever helps you think spatially — before you write any code.
+
+---
+
+## A Practical Guide to Building Your Chain
+
+*The rest of this page is the technical guide. The [Appendix](/reading/appendix-open-game) has the intellectual history — Calvino, Flusser, Pask — for those who want it.*
 
 ---
 

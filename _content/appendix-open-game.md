@@ -2,6 +2,7 @@
 title: "Appendix: The Chain as Open Game"
 nav_title: "Appendix: Open Game"
 sidebar_position: 99
+phase: 2
 tags: ["theory", "cybernetics", "appendix"]
 description: "The intellectual history behind prompt chaining: Calvino, Flusser, Pask, and the cybernetic moment of 1948–1975."
 ---
