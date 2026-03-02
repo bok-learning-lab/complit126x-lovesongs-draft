@@ -119,6 +119,10 @@ My mistress, when she walks, treads on the ground.
   },
 ];
 
+function buildPrompt(sonnets: string[]): string {
+  return `Here are three Shakespeare sonnets:\n\n${sonnets.map((s, i) => `--- Sonnet ${i + 1} ---\n${s}`).join('\n\n')}\n\nWrite a new sonnet in Shakespeare's style — 14 lines, iambic pentameter, ABAB CDCD EFEF GG rhyme scheme. Draw on the imagery, themes, and emotional register of the sonnets above, but write something original. Do not copy lines.`;
+}
+
 export default function DemoSonnetPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -203,11 +207,26 @@ export default function DemoSonnetPage() {
         })}
       </div>
 
-      <div className="mb-4 text-sm text-zinc-500">
+      <div className="mb-6 text-sm text-zinc-500">
         {selected.length === 0 && 'Select 3 sonnets to continue.'}
         {selected.length > 0 && selected.length < 3 && `${3 - selected.length} more to go.`}
         {selected.length === 3 && 'Ready.'}
       </div>
+
+      {/* Prompt reveal — appears once 3 are selected */}
+      {selected.length === 3 && (
+        <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden mb-6">
+          <div className="px-7 py-4 border-b border-zinc-800 flex items-center justify-between">
+            <span className="text-sm font-semibold text-zinc-200">The prompt</span>
+            <span className="text-xs text-zinc-500">exactly what gets sent to the model</span>
+          </div>
+          <div className="px-7 py-6">
+            <pre className="text-xs text-zinc-400 whitespace-pre-wrap font-mono leading-relaxed overflow-x-auto">
+              {buildPrompt(SONNETS.filter((s) => selected.includes(s.id)).map((s) => s.text))}
+            </pre>
+          </div>
+        </div>
+      )}
 
       <button
         onClick={handleGenerate}
@@ -239,7 +258,7 @@ export default function DemoSonnetPage() {
             </div>
             <div className="px-7 py-5 border-t border-zinc-800 bg-zinc-950/50">
               <p className="text-sm text-zinc-400 leading-relaxed">
-                <span className="font-medium text-zinc-300">Reflect:</span> Is this more or less Shakespearean than the spider chart output? What did it borrow directly — images, phrases, rhymes? What feels generic despite having the full text to work from?
+                <span className="font-medium text-zinc-300">Reflect:</span> Compare the output against the prompt above. What did the model take from the source texts — images, syntax, rhyme words? What feels generic despite having three complete sonnets to work from? Notice also what the prompt instructs and doesn&apos;t instruct: what decisions were left unspecified, and how did the model fill them?
               </p>
             </div>
           </div>

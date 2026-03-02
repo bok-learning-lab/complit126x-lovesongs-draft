@@ -19,6 +19,7 @@ export interface DocMetadata {
   phase?: number;
   tags?: string[];
   description?: string;
+  next_page?: string;
 }
 
 export interface Doc {
@@ -110,6 +111,7 @@ export function getDoc(slugArray: string[]): Doc | null {
       sidebar_position: meta.sidebar_position,
       tags: meta.tags,
       description: meta.description,
+      next_page: meta.next_page,
     },
     path: slugStr,
   };

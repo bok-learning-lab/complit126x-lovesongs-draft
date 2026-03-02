@@ -5,6 +5,7 @@ sidebar_position: 2
 phase: 2
 tags: ["workshop", "prompt chaining", "python", "code"]
 description: "The workshop session: reviewing the pre-workshop demos, frameworks for your chain, and a practical guide to building it."
+next_page: "next-steps"
 ---
 
 # Workshop
@@ -23,46 +24,108 @@ Context engineering and prompt chaining are not magic. They are sequences of foc
 
 ---
 
-## Frameworks *(to be completed in class)*
+## Frameworks
 
-Before you start building, it helps to have a skeleton — a framework for how to arrange your chain. Frameworks from other fields give you a starting vocabulary: structures already tested for moving raw material through staged refinement.
+Before you start building, it helps to have a skeleton — a way to organize the operations in your chain before you decide what goes where. Frameworks from other fields give you a starting vocabulary: structures already tested for moving raw material through staged refinement.
 
-We'll look at several in class. For now, placeholders:
+Pick one below (or find your own), slot operations into its slots, then decide on movement: do the operations chain linearly, loop, branch, or hand control back to you? Plan it on paper before you write any code.
 
-- **[Framework 1]** — *[placeholder]*
-- **[Framework 2]** — *[placeholder]*
-- **[Framework 3]** — *[placeholder]*
+---
 
-Each framework is a skeleton. You'll slot your chosen mechanics into it, then decide where it loops, branches, or hands control back to you. Plan it on paper first — cards, diagrams, whatever helps you think spatially — before you write any code.
+### STAR — Situation, Task, Action, Result
+
+Originally a job-interview preparation structure, recently tested as a prompt architecture. [Jo (2026)](https://arxiv.org/abs/2602.21814) found that STAR-structured prompts reached 85% accuracy on an implicit-constraint reasoning task where bare prompts scored 0% — because the **Task** step forces explicit goal articulation before any output is generated.
+
+| Slot | Question to answer | Example |
+|---|---|---|
+| **Situation** | What are you working from? | 3 Whitman poems; I want to capture his long-line cataloguing and direct address |
+| **Task** | What would a successful output actually do? | A poem that sounds like it comes from the same place — not a copy, but recognizably his |
+| **Action** | Which operations, in which order? | Score → Extract → Annotate → Build Context → Generate → Judge |
+| **Result** | How will you know if it worked? | Compare against scores-only output; identify what the chain added |
+
+The key move is the Task step. Defining success *before* you build the chain forces you to think about what "voice" means for your poet — which is the hard question this exercise is organized around.
+
+---
+
+### Communication Model — Speaker, Message, Audience
+
+Classical rhetorical structure. A message has two dimensions — Form (how something is said) and Content (what is said) — connecting a Speaker to an Audience.
+
+```
+Speaker ──┬──▶ Form ─────┬──▶ Audience
+          │      │       │
+          └──▶ Content ──┘
+                (Message)
+```
+
+| Slot | What it maps to in a voice chain |
+|---|---|
+| **Speaker** | The source poet — your input poems and what you extract from them |
+| **Form** | Syntactic habits, line structure, rhythm, formal choices — separable from content |
+| **Content** | Themes, images, recurring concerns — what the poems are about |
+| **Audience** | Who the generated text is for, and in what context it will be read |
+
+This framework draws attention to a split the spider chart collapses: Form and Content can be extracted in separate steps, weighted differently, and passed to the generation step as distinct variables. The interesting design question is whether your poet's voice lives more in Form or in Content — and what happens to the output when you give the model one but not the other.
+
+---
+
+### Dramatistic Pentad — Act, Scene, Agent, Agency, Purpose
+
+Kenneth Burke's [Dramatistic Pentad](https://en.wikipedia.org/wiki/Dramatistic_pentad) is a framework for analyzing any human action by asking five questions simultaneously. Where STAR sequences steps and the Communication Model separates form from content, the Pentad asks you to hold five dimensions in tension at once — and to notice which *ratio* (Act:Agent, Agency:Purpose, etc.) dominates your design.
+
+| Slot | Question | What it maps to in a voice chain |
+|---|---|---|
+| **Act** | What is being done? | The output itself — a sonnet, a chorus, a spoken-word verse |
+| **Scene** | In what context? | Formal constraints, genre, platform — where the output lives |
+| **Agent** | Who is doing it? | The source poet — and, separately, the model executing the steps |
+| **Agency** | By what means? | The operations in the chain — extraction, annotation, generation |
+| **Purpose** | To what end? | Your argument about what voice *is* for this poet |
+
+The most useful design question the Pentad raises is about **ratios**: which term drives the others? A chain dominated by *Agency* (the operations) produces different outputs than one dominated by *Purpose* (the goal). If your chain front-loads extraction and annotation, you're running an Agency:Act ratio — the means shape the output. If you define the purpose first (as STAR's Task step requires), you're running a Purpose:Agency ratio. The Pentad doesn't tell you which is correct; it makes the choice visible.
+
+---
+
+Each framework is a skeleton for organizing operations, not a formula. Once you've chosen one and slotted in your operations, the remaining design decisions are about movement: does the chain run linearly, loop back on a judge step, branch into parallel tracks, or pause for your input partway through?
 
 ---
 
 ## A Practical Guide to Building Your Chain
 
-*The rest of this page is the technical guide. The [Appendix](/reading/appendix-open-game) has the intellectual history — Calvino, Flusser, Pask — for those who want it.*
+*The rest of this page is the technical guide. The [Appendix](/reading/appendix-open-game) has some intellectual history for those who want it.*
 
 ---
 
 ## The Core Idea
 
-A prompt chain is a sequence of calls where **the output of one step becomes part of the input for the next**. Each arrow below is a separate API call doing one focused thing.
+A prompt chain is a sequence of calls where **the output of one step becomes part of the input for the next**. Each arrow is a separate API call doing one focused thing.
+
+You've already run the simplest possible version of this. The spider chart is a two-step chain:
 
 ```
-Poem → [Score]    → trait values
-Poem → [Extract]  → specific phrases and images
-             ↓ repeat for 3+ poems
-     [Synthesize] → shared context
-     [Generate]   → lyrics (full context)
-     [Compare]    → lyrics (scores only)
+Poem ──▶ [Score] ──▶ trait values
+                          │
+                          ▼
+                    [Generate] ──▶ sonnet
 ```
 
-The basic chain above is a starting point, not a template. The sequence below walks through each step — read it to understand the logic, then modify it to suit your poet. The Python notebook implements this chain exactly; the code is there when you need it.
+Step 1 compresses a poem into numbers. Step 2 generates new text from those numbers. That's the whole thing — and you saw exactly what it costs: the sonnet comes out in the right register, but it sounds like no one in particular.
+
+The fuller chain you'll build today adds steps between Score and Generate — steps that preserve more of the actual language before it gets compressed away:
+
+```
+Poem ──▶ [Score]   ──▶ trait values     ─┐
+Poem ──▶ [Extract] ──▶ phrases, images  ─┤
+          [Annotate: you]               ─┼──▶ [Build Context] ──▶ [Generate] ──▶ draft
+          ... repeat for 3+ poems      ─┘
+```
+
+Same structure. More steps between input and output, each one preserving something the spider chart discarded. The sequence below walks through each step — read it to understand the logic, then modify it to suit your poet. The Python notebook implements this chain; the code is there when you need it.
 
 ---
 
 ## A Bank of Operations
 
-Every step in a chain is one of a small number of atomic operations. These combine in any order, any number of times. The diagram section below shows a few configurations. The interesting design question is which sequence suits your poet and your goal.
+Every step in a chain is one of a small number of atomic operations. This is not a full list of operations-- feel free to invent some yourself. But we wanted to provide a few examples to give you a starting point. These combine in any order, any number of times. The diagram section below shows a few configurations. The interesting design question is which sequence suits your poet and your goal.
 
 | Operation | What it does | Example instruction |
 |---|---|---|
@@ -253,7 +316,3 @@ The notebook implements the linear chain. Your assignment is to treat it as a st
 As long as your chain combines operations and you can articulate what each step contributed — there is no wrong answer here. 
 
 ---
-
-*The Python code for all of this is in the [notebook](/reading/next-steps). For the intellectual history — Calvino, Flusser, Pask — see the [appendix](/reading/appendix-open-game).*
-
-*Back to: [Learning Lab Intro to Context Engineering](/reading/learning-lab-intro-to-context-engineering)*

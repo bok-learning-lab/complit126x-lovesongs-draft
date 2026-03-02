@@ -74,9 +74,9 @@ export default function PoemPersonalityPage() {
   const [selectedAnalysis, setSelectedAnalysis] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [generatedLyrics, setGeneratedLyrics] = useState<string | null>(null);
-  const [generatingLyrics, setGeneratingLyrics] = useState(false);
-  const [lyricsError, setLyricsError] = useState<string | null>(null);
+  const [generatedSonnet, setGeneratedSonnet] = useState<string | null>(null);
+  const [generatingSonnet, setGeneratingSonnet] = useState(false);
+  const [sonnetError, setSonnetError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -140,24 +140,24 @@ export default function PoemPersonalityPage() {
     }));
   }
 
-  const handleGenerateLyrics = async () => {
+  const handleGenerateSonnet = async () => {
     const averagedScores = computeAveragedScores(analyses);
-    setGeneratingLyrics(true);
-    setLyricsError(null);
-    setGeneratedLyrics(null);
+    setGeneratingSonnet(true);
+    setSonnetError(null);
+    setGeneratedSonnet(null);
     try {
       const response = await fetch('/api/generate-lyrics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ averagedScores }),
       });
-      if (!response.ok) throw new Error('Lyrics generation failed');
+      if (!response.ok) throw new Error('Generation failed');
       const data = await response.json();
-      setGeneratedLyrics(data.lyrics);
+      setGeneratedSonnet(data.sonnet);
     } catch (err) {
-      setLyricsError(err instanceof Error ? err.message : 'Something went wrong');
+      setSonnetError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
-      setGeneratingLyrics(false);
+      setGeneratingSonnet(false);
     }
   };
 
@@ -302,9 +302,9 @@ export default function PoemPersonalityPage() {
           {/* Section header */}
           <div className="mb-10">
             <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-2">Step 2</p>
-            <h2 className="text-3xl font-bold text-zinc-100 mb-4">From Spider Chart to Song</h2>
+            <h2 className="text-3xl font-bold text-zinc-100 mb-4">From Spider Chart to Sonnet</h2>
             <p className="text-zinc-400 max-w-2xl text-base leading-relaxed">
-              Below is the <em>complete</em> prompt the model will receive to write your lyrics —
+              Below is the <em>complete</em> prompt the model will receive to write a sonnet —
               nothing else. No poem text, no style examples, no author&apos;s name.
               Just the averaged scores from your chart, expressed as numbers.
             </p>
@@ -342,44 +342,43 @@ export default function PoemPersonalityPage() {
                 The complete prompt sent to the model
               </p>
               <pre className="text-sm text-zinc-300 font-mono leading-relaxed whitespace-pre-wrap flex-1">
-                {`Write a love song with the following trait scores (scale of 1-10):\n\n${computeAveragedScores(analyses).map(s => `- ${s.trait}: ${s.score.toFixed(1)}/10`).join('\n')}\n\nWrite complete song lyrics with a verse, a chorus, and a bridge.`}
+                {`Write a sonnet with the following trait scores (scale of 1-10):\n\n${computeAveragedScores(analyses).map(s => `- ${s.trait}: ${s.score.toFixed(1)}/10`).join('\n')}\n\nWrite exactly 14 lines in iambic pentameter with an ABAB CDCD EFEF GG rhyme scheme. Do not include a title.`}
               </pre>
             </div>
           </div>
 
           {/* Generate button */}
           <button
-            onClick={handleGenerateLyrics}
-            disabled={generatingLyrics}
+            onClick={handleGenerateSonnet}
+            disabled={generatingSonnet}
             className="w-full py-4 px-6 bg-purple-600 hover:bg-purple-700 disabled:bg-zinc-800 disabled:text-zinc-600 text-white font-semibold text-base rounded-xl transition-colors"
           >
-            {generatingLyrics ? 'Generating…' : 'Generate First Draft Lyrics'}
+            {generatingSonnet ? 'Generating…' : 'Generate a Sonnet'}
           </button>
 
-          {lyricsError && (
+          {sonnetError && (
             <div className="mt-4 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-200 text-sm">
-              {lyricsError}
+              {sonnetError}
             </div>
           )}
 
-          {/* Lyrics output */}
-          {generatedLyrics && (
+          {/* Sonnet output */}
+          {generatedSonnet && (
             <div className="mt-8">
               <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
                 <div className="px-7 py-4 border-b border-zinc-800 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-zinc-200">First draft</span>
-                  <span className="text-xs text-zinc-600 italic">generated from scores only — no poem text</span>
+                  <span className="text-sm font-semibold text-zinc-200">Generated sonnet</span>
+                  <span className="text-xs text-zinc-600 italic">from scores only — no poem text</span>
                 </div>
                 <div className="px-8 py-8">
                   <pre className="text-zinc-200 text-base whitespace-pre-wrap font-serif leading-loose">
-                    {generatedLyrics}
+                    {generatedSonnet}
                   </pre>
                 </div>
                 <div className="px-7 py-5 border-t border-zinc-800 bg-zinc-950/50">
                   <p className="text-sm text-zinc-400 leading-relaxed">
                     <span className="font-medium text-zinc-300">Reflect:</span> What does this get right?
-                    What did the compression lose? What would you need to give the model to get
-                    closer to your poet&apos;s actual voice?
+                    What did the compression lose? The sonnet form is constrained — 14 lines, fixed rhyme scheme — but everything inside those constraints was underdetermined by the scores. What would the model need to replicate the choices a specific poet actually made?
                   </p>
                 </div>
               </div>

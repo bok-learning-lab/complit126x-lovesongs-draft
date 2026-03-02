@@ -22,24 +22,22 @@ export async function POST(request: Request) {
       .map((s) => `- ${s.trait}: ${s.score.toFixed(1)}/10`)
       .join('\n');
 
-    const userPrompt = `Write a love song with the following trait scores (scale of 1-10):
+    const prompt = `Write a sonnet with the following trait scores (scale of 1-10):
 
 ${scoreList}
 
-Write complete song lyrics with a verse, a chorus, and a bridge.`;
+Write exactly 14 lines in iambic pentameter with an ABAB CDCD EFEF GG rhyme scheme. Do not include a title.`;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-2024-08-06',
-      messages: [{ role: 'user', content: userPrompt }],
+    const response = await openai.responses.create({
+      model: 'gpt-4o',
+      input: prompt,
     });
 
-    const lyrics = completion.choices[0].message.content;
-
-    return NextResponse.json({ lyrics });
+    return NextResponse.json({ sonnet: response.output_text });
   } catch (error) {
     console.error('OpenAI API error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate lyrics' },
+      { error: 'Failed to generate sonnet' },
       { status: 500 }
     );
   }

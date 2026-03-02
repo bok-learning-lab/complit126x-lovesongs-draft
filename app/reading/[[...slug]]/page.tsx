@@ -60,6 +60,9 @@ export default async function ReadingPage({
 
   const currentPath = slug.join('/');
 
+  // Resolve next-page doc for CTA
+  const nextPageDoc = doc.metadata.next_page ? getDoc([doc.metadata.next_page]) : null;
+
   return (
     <DocsLayout nav={nav} currentPath={currentPath}>
       <article>
@@ -81,6 +84,27 @@ export default async function ReadingPage({
         <div className="prose">
           <MDXContent />
         </div>
+
+        {/* Next-page CTA */}
+        {nextPageDoc && (
+          <div className="mt-16 pt-10 border-t border-zinc-800 not-prose">
+            <a
+              href={`/reading/${doc.metadata.next_page}`}
+              className="group flex items-center justify-between w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-purple-700 rounded-xl px-8 py-7 transition-all"
+            >
+              <div>
+                <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">Next</p>
+                <p className="text-xl font-bold text-zinc-100 mb-1">
+                  {nextPageDoc.metadata.title}
+                </p>
+                {nextPageDoc.metadata.description && (
+                  <p className="text-sm text-zinc-400">{nextPageDoc.metadata.description}</p>
+                )}
+              </div>
+              <span className="text-2xl text-zinc-500 group-hover:text-purple-400 transition-colors ml-6 shrink-0">→</span>
+            </a>
+          </div>
+        )}
       </article>
     </DocsLayout>
   );

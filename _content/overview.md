@@ -26,22 +26,3 @@ What we call "prompt chaining" is another version of this. You have inputs (poem
 ---
 
 Before the workshop you'll work through three short demos. Each one tries to capture voice by a different means — and each one falls short in a different, instructive way. Start with the first one below.
-
-<a
-  href="/analyzer"
-  style={{
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginTop: '16px',
-    padding: '12px 24px',
-    background: '#7c3aed',
-    color: 'white',
-    borderRadius: '8px',
-    fontWeight: 600,
-    textDecoration: 'none',
-    fontSize: '0.95rem',
-  }}
->
-  Demo 1: The Spider Chart →
-</a>
