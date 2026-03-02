@@ -101,6 +101,9 @@ export default function DemoVoicePage() {
           controls
           className="w-full"
         />
+        <p className="text-xs text-zinc-500 mt-3 leading-relaxed">
+          AI-generated voice synthesis via ElevenLabs, trained on audio from a podcast Prof. Weigel recorded a few years ago. The voice is synthetic — not a recording of her reading this poem.
+        </p>
       </div>
 
       {/* The question */}
