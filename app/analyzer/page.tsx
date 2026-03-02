@@ -167,10 +167,23 @@ export default function PoemPersonalityPage() {
         <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-3">Demo 1 — Pre-Workshop</p>
         <h1 className="text-3xl font-bold text-zinc-100">The Spider Chart</h1>
         <p className="text-zinc-400 mt-3 max-w-2xl leading-relaxed">
-          Score poems across traits you define, then generate lyrics from those scores alone — no poem text, no quotations, no author&apos;s name. Just the numbers.
+          Score poems across traits you define, then generate a sonnet from those scores alone — no poem text, no quotations, no author&apos;s name. Just the numbers.
         </p>
-        <p className="text-zinc-500 mt-2 max-w-2xl text-sm leading-relaxed">
-          This is roughly what music recommendation systems do: a song becomes a point in trait-space, and the system finds other songs nearby. Run it and see what comes out. The output will probably feel like it&apos;s in the right mood — without sounding like anyone in particular. That&apos;s the point.
+        <p className="text-zinc-400 mt-2 max-w-2xl text-sm leading-relaxed">
+          In your Colab notebooks, you&apos;ve been running code by pressing the play button on individual cells. This page works the same way — but instead of cells, you&apos;ll click buttons on a web interface. No code required here.
+        </p>
+        <p className="text-zinc-500 mt-3 max-w-2xl text-sm leading-relaxed">
+          <span className="text-zinc-400 font-medium">Here&apos;s what to do, in order:</span>
+        </p>
+        <ol className="mt-2 max-w-2xl text-sm text-zinc-500 space-y-1 list-decimal list-inside leading-relaxed">
+          <li>Paste a poem into the text box on the left (one is already loaded to get you started).</li>
+          <li>Look at the five traits below the poem — these are the dimensions the tool will score the poem on. You can edit them if you want.</li>
+          <li>Click <span className="text-zinc-300 font-medium">Analyze Poem</span>. The tool sends the poem and traits to an AI model, which scores the poem on each trait and explains its reasoning. The spider chart on the right will appear.</li>
+          <li>Repeat with additional poems — the chart will layer them so you can compare.</li>
+          <li>Once you&apos;ve analyzed at least one poem, scroll down to Step 2 and click <span className="text-zinc-300 font-medium">Generate a Sonnet</span>. The model will write a new sonnet using only the averaged scores — no poem text at all.</li>
+        </ol>
+        <p className="text-zinc-500 mt-3 max-w-2xl text-sm leading-relaxed">
+          This is roughly what music recommendation systems do: a song becomes a point in trait-space, and the system finds other songs nearby. The output will probably feel like it&apos;s in the right mood — without sounding like anyone in particular. That gap is the point.
         </p>
       </header>
 
