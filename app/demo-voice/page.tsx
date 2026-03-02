@@ -1,7 +1,3 @@
-'use client';
-
-import { useRef, useState } from 'react';
-
 const GENERATED_SONNET = `The years between a sentence and its eye
 are not a silence but a held-out hand.
 What time removes, the poem can supply—
@@ -51,40 +47,7 @@ Write a sonnet with the following trait scores (scale of 1-10):
 Write exactly 14 lines in iambic pentameter with an ABAB CDCD EFEF GG
 rhyme scheme. Do not include a title.`;
 
-// Set to true once ELEVENLABS_VOICE_ID + ELEVENLABS_API_KEY are configured
-const AUDIO_ENABLED = true;
-
 export default function DemoVoicePage() {
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [loadingAudio, setLoadingAudio] = useState(false);
-  const [audioError, setAudioError] = useState<string | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const handlePlay = async () => {
-    if (audioUrl) {
-      audioRef.current?.play();
-      return;
-    }
-    setLoadingAudio(true);
-    setAudioError(null);
-    try {
-      const res = await fetch('/api/demo-voice-audio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: GENERATED_SONNET }),
-      });
-      if (!res.ok) throw new Error('Audio generation failed');
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      setAudioUrl(url);
-      // autoplay once URL is set — handled by the audio element's onCanPlay
-    } catch (e) {
-      setAudioError(e instanceof Error ? e.message : 'Something went wrong');
-    } finally {
-      setLoadingAudio(false);
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <header className="mb-10">
@@ -132,51 +95,12 @@ export default function DemoVoicePage() {
 
       {/* Audio player */}
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 p-7 mb-10">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm font-semibold text-zinc-200">Audio — read aloud in Prof. Weigel&apos;s voice</p>
-          {!AUDIO_ENABLED && (
-            <span className="text-xs text-zinc-500 bg-zinc-800 px-3 py-1 rounded-full">Coming soon</span>
-          )}
-        </div>
-
-        {AUDIO_ENABLED ? (
-          <div className="space-y-3">
-            <div className="w-full bg-zinc-800 rounded-lg h-12 flex items-center px-4 gap-3">
-              <button
-                onClick={handlePlay}
-                disabled={loadingAudio}
-                className="w-8 h-8 rounded-full bg-purple-700 hover:bg-purple-600 disabled:bg-zinc-700 flex items-center justify-center shrink-0 transition-colors"
-              >
-                <span className="text-white text-xs">{loadingAudio ? '…' : '▶'}</span>
-              </button>
-              {audioUrl ? (
-                <audio
-                  ref={audioRef}
-                  src={audioUrl}
-                  controls
-                  onCanPlay={() => audioRef.current?.play()}
-                  className="flex-1 h-8"
-                />
-              ) : (
-                <div className="flex-1 h-1 bg-zinc-700 rounded-full" />
-              )}
-            </div>
-            {audioError && (
-              <p className="text-xs text-red-400">{audioError}</p>
-            )}
-            <p className="text-xs text-zinc-600">
-              Voice synthesis via ElevenLabs. Audio is generated on first play and may take a moment.
-            </p>
-          </div>
-        ) : (
-          <div className="w-full bg-zinc-800 rounded-lg h-12 flex items-center px-4 gap-3">
-            <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center shrink-0">
-              <span className="text-zinc-500 text-xs">▶</span>
-            </div>
-            <div className="flex-1 h-1 bg-zinc-700 rounded-full" />
-            <span className="text-xs text-zinc-600">0:00</span>
-          </div>
-        )}
+        <p className="text-sm font-semibold text-zinc-200 mb-4">Audio — read aloud in Prof. Weigel&apos;s voice</p>
+        <audio
+          src="/moira-audio.mp3"
+          controls
+          className="w-full"
+        />
       </div>
 
       {/* The question */}
