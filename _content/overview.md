@@ -26,3 +26,7 @@ What we call "prompt chaining" is another version of this. You have inputs (poem
 ---
 
 Before the workshop you'll work through three short demos. Each one tries to capture voice by a different means — and each one falls short in a different, instructive way. Start with the first one below.
+
+---
+
+**Recommended reading before the workshop:** Anthropic's [Effective Context Engineering for AI Agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) is a short, practical guide to prompting — what context actually is, what it does, and how to structure it. The vocabulary it introduces (context window, prompt design, chaining) will be useful in the workshop and for the assignment.
