@@ -14,6 +14,15 @@ next_page: "next-steps"
 
 ---
 
+**In this guide:**
+
+1. [Frameworks](#frameworks) — Three structures for organizing the operations in your chain before you write any code (STAR, Communication Model, Dramatistic Pentad)
+2. [A Bank of Operations](#a-bank-of-operations) — The atomic steps you'll combine, in any order
+3. [The Basic Chain, Step by Step](#the-basic-chain-step-by-step) — Each step in sequence: Score → Extract → Annotate → Build Context → Generate → Compare
+4. [Going Further](#going-further-other-chain-configurations) — Other configurations: parallel tracks, feedback loops, branching by form
+
+---
+
 ## Where We Left Off
 
 Before this session, you ran the spider chart and saw what a purely numerical representation of a poem produces when used to generate new text: something in the right emotional register, but without specificity. You tried feeding sonnets directly into a prompt, and you heard generated text read aloud in a synthesized voice.
@@ -49,7 +58,7 @@ The key move is the Task step. Defining success *before* you build the chain for
 
 ### Communication Model — Speaker, Message, Audience
 
-Classical rhetorical structure. A message has two dimensions — Form (how something is said) and Content (what is said) — connecting a Speaker to an Audience.
+This model reflects a classical rhetorical structure in which each message connects a Speaker to an Audience via two dimensions: Form (how something is said) and Content (what is said).
 
 ```
 Speaker ──┬──▶ Form ─────┬──▶ Audience
@@ -62,7 +71,7 @@ Speaker ──┬──▶ Form ─────┬──▶ Audience
 |---|---|
 | **Speaker** | The source poet — your input poems and what you extract from them |
 | **Form** | Syntactic habits, line structure, rhythm, formal choices — separable from content |
-| **Content** | Themes, images, recurring concerns — what the poems are about |
+| **Content** | Themes, poetic images, recurring concerns — what the poems are about |
 | **Audience** | Who the generated text is for, and in what context it will be read |
 
 This framework draws attention to a split the spider chart collapses: Form and Content can be extracted in separate steps, weighted differently, and passed to the generation step as distinct variables. The interesting design question is whether your poet's voice lives more in Form or in Content — and what happens to the output when you give the model one but not the other.
@@ -197,7 +206,7 @@ The Python notebook calls this `poet_profile` — a 150-word prose description t
 More generative alternatives for what `context_block` can be:
 
 - Your annotated quotes as-is, passed directly
-- A list of 10 images the model is **allowed to use** (and no others)
+- A list of 10 poetic images — verbal figures, not picture files — the model is **allowed to use** (and no others)
 - Constraints you wrote yourself: *"end every stanza with a question," "no adjectives in the chorus"*
 - The raw poem text with no synthesis at all
 - Multiple variables, each feeding into the generation step for a different reason
