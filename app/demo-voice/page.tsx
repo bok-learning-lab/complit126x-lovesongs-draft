@@ -120,23 +120,17 @@ export default function DemoVoicePage() {
         </p>
       </div>
 
-      {/* Workshop CTA */}
+      {/* Workshop CTA — placeholder until workshop session */}
       <div className="pt-4 border-t border-zinc-800">
-        <a
-          href="/reading/prompt-chaining-guide"
-          className="group flex items-center justify-between w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-purple-700 rounded-xl px-8 py-7 transition-all"
-        >
-          <div>
-            <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">Workshop</p>
-            <p className="text-xl font-bold text-zinc-100 mb-1">
-              Now build something better
-            </p>
-            <p className="text-sm text-zinc-400">
-              The workshop session: frameworks, mechanics, and designing your own prompt chain.
-            </p>
-          </div>
-          <span className="text-2xl text-zinc-500 group-hover:text-purple-400 transition-colors ml-6 shrink-0">→</span>
-        </a>
+        <div className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-8 py-7">
+          <p className="text-xs font-semibold text-purple-400 uppercase tracking-widest mb-1">Up Next</p>
+          <p className="text-xl font-bold text-zinc-100 mb-1">
+            We&apos;ll work through the rest during the workshop!
+          </p>
+          <p className="text-sm text-zinc-400">
+            Bring your questions about these demos — we&apos;ll use them as a starting point.
+          </p>
+        </div>
       </div>
     </div>
   );

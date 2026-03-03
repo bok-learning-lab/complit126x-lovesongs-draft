@@ -29,7 +29,8 @@ export function DocsSidebar({ nav, onNavigate }: DocsSidebarProps) {
     return acc;
   }, {});
 
-  const phases = [1, 2, 3].filter((p) => p === 1 || navByPhase[p]?.length);
+  // Only show pre-workshop content for now; workshop + post-workshop hidden until session
+  const phases = [1];
 
   return (
     <div className="h-full overflow-y-auto p-5 flex flex-col gap-6">
