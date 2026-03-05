@@ -4,12 +4,12 @@ nav_title: "Next Steps"
 sidebar_position: 3
 phase: 3
 tags: ["assignment", "guide"]
-description: "Three approaches to building your prompt chain — from a simple chat conversation to a Python notebook to fully custom code."
+description: "Three approaches to building your prompt chain — from a chat conversation to a Python notebook built from your workshop results."
 ---
 
 # Three Ways to Complete the Assignment
 
-You've seen what happens when you generate lyrics from scores alone. Now you need to build a prompt chain that does better — one that preserves the poetic texture the spider chart compresses away.
+You've seen what happens when you generate lyrics from scores alone, and in the workshop you practiced building a chain that does better — one-shotting a sonnet, diagnosing it, having a dialogue with the model, identifying atomic mechanics, and assembling a sequence. Now you need to do the same thing for your poet and your love song.
 
 Here are three ways to do that, from simplest to most involved. Pick the one that matches your comfort level and ambition.
 
@@ -19,9 +19,17 @@ Here are three ways to do that, from simplest to most involved. Pick the one tha
 
 **Best for:** Getting started quickly, or if you want to focus on the writing rather than the code.
 
-You don't need to write any code to build a prompt chain. You can do the whole thing as a conversation in a chat interface — Gemini, Claude, or ChatGPT all work.
+You already did this in the workshop. You built a prompt chain in a chat window — no code required. The assignment works the same way: do it in stages, in any chat interface (Gemini, Claude, ChatGPT), saving each step's output before moving to the next.
 
-The key is to **do it in stages**, saving each step's output before moving to the next:
+The difference between the workshop and the assignment is **documentation**. In the workshop, you worked collaboratively and presented your chain on paper. For the assignment, you need to keep a log of:
+
+- **What you did at each step** — the actual prompts you used
+- **Why you made each choice** — what you were trying to get the model to do, and what you noticed
+- **What changed** — how the output improved (or didn't) from one step to the next
+
+Think of it as the paper-and-index-card version of your workshop sequence, but written up. The [Workshop](/reading/prompt-chaining-guide#the-workshop-activity) recap has the full activity flow if you want a refresher.
+
+Here's one possible sequence (adapt it — your chain should reflect your poet):
 
 1. **Paste each poem** and ask the model to score it on your traits (same as the web tool). Note the scores.
 2. For each poem, ask: *"Extract the 3–5 most characteristic phrases from this poem. Describe its formal moves, emotional arc, and recurring sounds. Be specific and quote the text."*
@@ -33,13 +41,15 @@ The key is to **do it in stages**, saving each step's output before moving to th
 
 ---
 
-## Option 2: Python Notebook
+## Option 2: Python Notebooks
 
-**Best for:** Students who want a more structured workflow, the ability to run and re-run steps, and something reproducible to submit.
+**Best for:** Students who want a structured, reproducible workflow — or who want to build on what their group did in the workshop.
 
-If you did the **Ancient Robots** section work, you already have everything you need: your OpenAI API key is already set up in Colab Secrets, and you've used the same `client.responses.create()` pattern before. This notebook uses the same key and the same SDK — just a different task.
+If you did the **Ancient Robots** section work, you already have everything you need: your OpenAI API key is already set up in Colab Secrets, and you've used the same `client.responses.create()` pattern before. These notebooks use the same key and the same SDK — just a different task.
 
-The notebook below walks you through the full chain, step by step. Run each cell, paste your poems, and it will handle the API calls and display the results.
+### The Base Notebook
+
+This is a general-purpose chain that works for any poet. It walks you through the full sequence: score, extract, annotate, build context, generate, compare.
 
 <a
   href="/api/download-notebook"
@@ -58,10 +68,10 @@ The notebook below walks you through the full chain, step by step. Run each cell
     fontSize: '0.95rem',
   }}
 >
-  Download Notebook (.ipynb) →
+  Download Base Notebook (.ipynb) →
 </a>
 
-### Adding the notebook to your course folder in Google Drive
+#### Adding the notebook to your course folder in Google Drive
 
 1. Click the download link above — the file `complit126x-love-songs.ipynb` will save to your Downloads folder.
 2. Go to [drive.google.com](https://drive.google.com) and navigate to your **complit126x** folder.
@@ -80,17 +90,156 @@ The notebook below walks you through the full chain, step by step. Run each cell
 
 ---
 
-## Option 3: Advanced
+### Workshop Notebooks by Poet
 
-**Best for:** Students who want to build something custom — a frontend tool, a more complex pipeline, integrations with other tools, or an MCP-powered workflow.
+These notebooks are built from the prompt chains your groups designed in the workshop — translated from your paper diagrams and presentation transcripts into runnable Python. Each one implements the specific sequence of operations your group discovered, so the chains differ from poet to poet.
 
-If you want to go further than the notebook — building your own web app, using the Anthropic SDK directly in Python, setting up MCP servers for your own tools, or doing something we haven't thought of yet — **reach out to us at the Learning Lab** for custom support.
+You can use your group's notebook as a starting point for the assignment, modify it for a different poet, or use it as inspiration for building your own chain.
 
-We can help with:
-- Building a frontend (like this one) tailored to your workflow
-- Designing a more complex multi-step chain
-- Integrating with other APIs (music generation, image generation, etc.)
-- Setting up local development with the Anthropic or OpenAI SDKs
-- MCP servers and agent-based approaches
+**A note on models:** Several groups used multiple models in the workshop (Gemini, Claude, ChatGPT) — for example, generating in one and critiquing in another. These notebooks use the **OpenAI API only** (GPT-4o), since that's what your API keys support. The chain logic is the same; where a group originally switched models, the notebook simulates the "fresh perspective" by opening a new API call with a different system prompt or by stripping prior context. The architecture matters more than which model runs each step.
+
+*Click any poet to download their notebook. Setup is the same as the base notebook above.*
+
+{/* Workshop group notebooks — each implements a different chain architecture */}
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px', marginBottom: '24px' }}>
+
+<a
+  href="/notebooks/adrienne-rich.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  Adrienne Rich — iterate + compare within context + cross-chat critique →
+</a>
+
+<a
+  href="/notebooks/anne-sexton.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  Anne Sexton — thematic extremes + synthesis →
+</a>
+
+<a
+  href="/notebooks/frank-ohara.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  Frank O'Hara — web search + cross-model critique loop →
+</a>
+
+<a
+  href="/notebooks/wb-yeats.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  W.B. Yeats — linguistic trait extraction + iterative polish →
+</a>
+
+<a
+  href="/notebooks/james-merrill.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  James Merrill — batch poems + self-critique loop (×3) →
+</a>
+
+<a
+  href="/notebooks/cp-cavafy.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  C.P. Cavafy — quality sliders + persona generation →
+</a>
+
+<a
+  href="/notebooks/gwendolyn-brooks.ipynb"
+  style={{
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '12px 24px',
+    background: '#4f46e5',
+    color: 'white',
+    borderRadius: '8px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    fontSize: '0.95rem',
+  }}
+>
+  Gwendolyn Brooks — cross-model judging + AI-detection feedback →
+</a>
+
+</div>
+
+---
+
+## Option 3: Something Custom
+
+**Best for:** Students who want to build something we haven't thought of yet.
+
+If you want to go further than the notebooks — building your own web app, using the Anthropic SDK directly, integrating with music generation APIs, or designing a workflow that doesn't fit any template — reach out to the Learning Lab for custom support.
+
+**Email [learninglab@fas.harvard.edu](mailto:learninglab@fas.harvard.edu?subject=COMPLIT%20126X%20—%20Custom%20Project)** with the course title and what you'd like help with, and Madeleine or one of our fellows will try to meet with you.
 
 This is the "bring us your wildest idea" option. The Learning Lab's job is to help you execute it.

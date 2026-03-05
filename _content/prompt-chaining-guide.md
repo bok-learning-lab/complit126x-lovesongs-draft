@@ -4,7 +4,7 @@ nav_title: "Workshop"
 sidebar_position: 2
 phase: 2
 tags: ["workshop", "prompt chaining", "python", "code"]
-description: "The workshop session: reviewing the pre-workshop demos, frameworks for your chain, and a practical guide to building it."
+description: "The workshop session: a recap of key concepts from the in-class session, frameworks for organizing your chain, and a practical guide to building it."
 next_page: "next-steps"
 ---
 
@@ -14,22 +14,188 @@ next_page: "next-steps"
 
 ---
 
-**In this guide:**
+**On this page:**
 
-1. [Frameworks](#frameworks) — Three structures for organizing the operations in your chain before you write any code (STAR, Communication Model, Dramatistic Pentad)
-2. [A Bank of Operations](#a-bank-of-operations) — The atomic steps you'll combine, in any order
-3. [The Basic Chain, Step by Step](#the-basic-chain-step-by-step) — Each step in sequence: Score → Extract → Annotate → Build Context → Generate → Compare
-4. [Going Further](#going-further-other-chain-configurations) — Other configurations: parallel tracks, feedback loops, branching by form
+1. [Workshop Recap](#workshop-recap) — Key concepts from the in-class session: prompting, context, thinking models, and prompt chaining
+2. [Frameworks](#frameworks) — Three structures for organizing the operations in your chain (STAR, Communication Model, Dramatistic Pentad)
+3. [A Bank of Operations](#a-bank-of-operations) — The atomic steps you'll combine, in any order
+4. [The Basic Chain, Step by Step](#the-basic-chain-step-by-step) — Each step in sequence: Score → Extract → Annotate → Build Context → Generate → Compare
+5. [Going Further](#going-further-other-chain-configurations) — Other configurations: parallel tracks, feedback loops, branching by form
 
 ---
 
-## Where We Left Off
+## Workshop Recap
+
+> *"Good context engineering means finding the **smallest possible** set of **high-signal tokens** that maximize the likelihood of some desired outcome."*
+> — [Anthropic, "Building Effective Agents"](https://www.anthropic.com/engineering/building-effective-agents)
+
+> *This section synthesizes the key concepts from the in-class workshop session. It was generated from the workshop transcript and edited for clarity.*
+
+### Where We Left Off
 
 Before this session, you ran the spider chart and saw what a purely numerical representation of a poem produces when used to generate new text: something in the right emotional register, but without specificity. You tried feeding sonnets directly into a prompt, and you heard generated text read aloud in a synthesized voice.
 
 The through-line across all three demos: the output works as a mood, not as a voice. The numbers capture *dimensions* of a poem — how melancholic it is, how romantic — without capturing the specific images, syntactic habits, and formal moves that make those qualities feel like one particular writer's. That gap is real. Closing it is what prompt chaining is for.
 
-Context engineering and prompt chaining are not magic. They are sequences of focused operations — each one doing one thing, each one passing something to the next. The question for today is: which operations, in which order, for your poet?
+### Prompting: Strings In, Strings Out
+
+The workshop began with a foundational question: what is prompting? Students offered that it's an input that leads to an output, that the goal is to obtain a desirable result, and that good prompts are clear, specific, and parameterized. The synthesis: prompting is, at its core, putting a string in to get a string out. That is the essence of what large language models do — they take a string of tokens (units roughly between characters and words, converted to numerical codes on the back end) and produce a string of tokens in response.
+
+```
+┌─────────────────┐              ┌──────────────────────┐
+│  your prompt     │              │  model response       │
+│  (a string)      │──▶  LLM  ──▶│  (a string)           │
+│                  │              │                       │
+│  "generate me    │   tokens    │  "Shall I compare     │
+│   a sonnet"      │──▶ in/out ──▶│   thee to a summer's │
+└─────────────────┘              │   day..."             │
+                                 └──────────────────────┘
+```
+
+What makes a *good* prompt? Clarity, a certain level of specificity, and parameters — but the right level of specificity is task-dependent. Anthropic's context engineering guide calls this finding the *right altitude*: "the Goldilocks zone between two common failure modes." Too constrained — hardcoding exact logic — and the output is brittle. Too vague, and the model drifts. The optimal altitude is specific enough to guide behavior, yet flexible enough to let the model use strong heuristics. When you boil it down, prompting is just really good, clear communication.
+
+### Context: The Length of a Novel
+
+When you have a conversation with an LLM, you're building up context. Each exchange — your prompt, the model's response, your follow-up — accumulates in a context window. Most models have a context window of about 200,000 tokens, roughly the length of a novel. (Think of tokens as approximately words — the math isn't exact, but the intuition holds.)
+
+But that space isn't all yours. Before you type anything, the system prompt takes up about 10,000 tokens. System prompts are the literal instructions that the company gives the model before any conversation begins. Claude, for instance, [publishes its system prompts](https://platform.claude.com/docs/en/release-notes/system-prompts) — and if you do a close reading, you'll see choices being made about your textual output that you never consented to. The system prompt specifies tone ("warm," "friendly, age-appropriate"), restricts emoji use, and reflects accumulated user complaints. It's an inherently reactive document: some of it comes from the company's values, and a lot of it comes from other users saying *I kind of hate this thing*.
+
+```
+Your context window (~200K tokens)
+┌──────────────────────────────────────────────────────────────────────┐
+│▓▓▓▓▓▓▓▓▓▓│                                                          │
+│  system   │                  (available space)                       │
+│  prompt   │                                                          │
+│  ~10K     │                                                          │
+└──────────────────────────────────────────────────────────────────────┘
+
+After a few exchanges:
+┌──────────────────────────────────────────────────────────────────────┐
+│▓▓▓▓▓▓▓▓▓▓│░░░│▒▒▒▒▒▒▒▒▒▒│░░░░│▒▒▒▒▒▒▒▒▒▒▒▒▒│                     │
+│  system   │you│  AI resp  │you │   AI resp    │   (remaining)       │
+│  prompt   │   │           │    │              │                     │
+└──────────────────────────────────────────────────────────────────────┘
+  ▓ system prompt (you don't control this)
+  ░ your input
+  ▒ AI-generated text
+```
+
+The key insight: even something as technical-sounding as a "system prompt" is, at the end of the day, text. And working with text is precisely what you're doing in this course. You have the ability to read, critique, and construct documents like this — because you've all written papers, you've all made good instruction docs, and you've all decided what to highlight when reading.
+
+### The Context Ratio Problem
+
+Here the workshop introduced a key concept about agency. In a typical chat interaction, your input might constitute roughly 10,000 tokens — the system prompt and a few short messages. The AI's generated output, meanwhile, might occupy 30,000 tokens. You're giving a lot of agency to the LLM: both its system prompt and its generated text dominate the context window.
+
+The metaphor from the session: a tiny input in a large context window is "weak and wobbly" — hallucinating, drifting, ignoring your instructions. The more context you add that you know is strong and you've personally vetted, the more deterministic the output becomes. You can say more cleanly: *this is all of my context, I know every element of this window is something I approve, now use all of it to produce something focused and finite.*
+
+The goal is to reverse the ratio. Instead of giving the model a small prompt and getting a large, uncontrolled output, you provide rich, curated context and ask the LLM to produce something small and specific. That reversal is the core principle behind context engineering.
+
+```
+Typical interaction:
+┌──────────────────────────────────────────────────────┐
+│▓▓▓▓▓│░░│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│   "weak and wobbly"
+│ sys  │u │              AI output (~30K)              │   hallucinating, drifting
+└──────────────────────────────────────────────────────┘
+
+The goal:
+┌──────────────────────────────────────────────────────┐
+│▓▓▓▓▓│░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│▒▒▒▒│   focused, deterministic
+│ sys  │      your context (rich, curated)        │out │   you control the window
+└──────────────────────────────────────────────────────┘
+  ░ = context you wrote or approved
+  ▒ = small, specific AI output
+```
+
+### From Thinking Models to Prompt Chaining
+
+Thinking models (when you click "thinking" or "deep think" in a chat window) don't actually put more brain into the task. Instead, your prompt goes to an LLM that creates a plan — breaking the task into subtasks, pulling from training data, sometimes calling tools (code execution, web search). The results of these subtasks get packaged into context, and that context goes to the LLM, which generates the final output.
+
+But you don't control any of these intermediate decisions. You can't intervene to say *no, don't use that sonnet as a reference* or *that's not what I meant by 'style.'* You're giving away the decomposition — the choice of what steps to take, in what order, with what tools — to the model.
+
+```
+  WHAT YOU SEE
+  ┌──────────────┐                                        ┌──────────────┐
+  │░░░░░░░░░░░░░░│── ── ── ── ── ── ── ── ── ── ── ── ──▶│ final output │
+  │ your prompt  │                                        │ (sonnet)     │
+  └──────┬───────┘                                        └──────▲───────┘
+─────────┼──────────────── UNDER THE HOOD ───────────────────────┼────────
+         ▼                                                       │
+  ┌──────────────┐                                        ┌──────┴───────┐
+  │  LLM         │    ┌────────┐ ┌────────┐ ┌────────┐   │  all context │
+  │  makes a     │──▶ │"what is│ │"who is │ │"find   │──▶│  packaged    │
+  │  plan        │    │a       │ │Shakes- │ │example │   │  together    │
+  └──────────────┘    │sonnet?"│ │peare?" │ │sonnets"│   └──────────────┘
+                      └───┬────┘ └───┬────┘ └───┬────┘
+                          │          │          │
+                          ▼          ▼          ▼
+                    ╔═════════════════════════════════╗
+                    ║    TOOLS (when needed)          ║
+                    ║    </> code   (web) search      ║
+                    ╚═════════════════════════════════╝
+
+  you control: nothing in between
+```
+
+Prompt chaining takes that agency back. Instead of letting the model automate the decomposition, you design the sequence of operations yourself. To make this concrete, the workshop walked through an industry example: a customer service bot. A customer calls in and provides their name. That triggers a plan: query a database for the customer's order history, retrieve relevant policy documents, ask the customer to describe their problem, trigger a refund tool. Each step feeds into the next, all packaged into context for the final output. On the customer's side, they said a few things — on the back end, an entire chain of operations ran.
+
+```
+  CUSTOMER SIDE                    UNDER THE HOOD
+  ─────────────                    ──────────────
+
+  "Hi, I'm Alex" ─────▶  [plan] ──▶ query DB ──▶ order history ──┐
+                                                                   │
+  "I never got            [plan] ──▶ policy docs ──▶ refund rules ─┤
+   my order" ──────────▶                                           │
+                          [plan] ──▶ refund tool ──────────────────┤
+                                                                   │
+                                     ┌─────────────────────────────┘
+                                     ▼
+                               [package context] ──▶ [LLM] ──▶ response
+```
+
+The key insight: these best practices for getting consistent AI output were developed for call centers, business operations, and code generation — but they apply equally to making a sonnet. The workshop retrofits industry techniques for literary production.
+
+### High-Signal Tokens
+
+From the industry framing: "Good context means finding the smallest possible set of high-signal tokens that maximize the likelihood of some desired outcome." A high-signal token is one that carries the meaning of what you're actually asking the model to do — the actual content and argumentation, as opposed to noise tokens like publisher pages, metadata, and filler.
+
+This is not a foreign concept. You already practice it when you read: you highlight key passages, you skip the frontmatter, you identify where an argument is finally being made. Context engineering is, in this sense, an extension of close reading — deciding what's signal and what's noise, and constructing a window that's as dense with signal as possible.
+
+### The Workshop Activity
+
+Students worked in groups with two tools: a computer (chat windows, no coding) and paper or index cards. The task was to generate a sonnet in the style of a chosen poet — not by one-shotting it, but by building a sequence of operations:
+
+```
+  chat (computer)                                    paper (log)
+  ───────────────                                    ───────────
+  ┌──────────┐    ┌──────────┐    ┌──────────┐
+  │ 1. one-  │──▶ │ 2. diag- │──▶ │ 3. dia-  │
+  │ shot     │    │ nose     │    │ logue    │
+  └──────────┘    └──────────┘    └─────┬────┘
+                                        │
+                                        ▼
+                                  ┌──────────┐    ┌──────────┐    ┌──────────┐
+                                  │ 4. find  │──▶ │ 5. build │──▶ │ 6. add   │
+                                  │ steps /  │    │ sequence │    │ loops +  │
+                                  │ mechanics│    │          │    │ judges   │
+                                  └──────────┘    └──────────┘    └─────┬────┘
+                                                                        │
+                                                                        ▼
+                                                                  ┌──────────┐
+                                                                  │ 7. pre-  │
+                                                                  │ sent     │
+                                                                  └──────────┘
+```
+
+1. **One-shot a sonnet.** Pick a poet and ask the model: *generate me a sonnet in the style of X.* Look at what comes back.
+2. **Diagnose.** As a group, identify what's wrong with the sonnet. What's missing? What doesn't sound like the poet?
+3. **Dialogue.** Have a back-and-forth conversation with the LLM. Tell it what's bad and what's good. When the model nails something based on a specific instruction, note it — that instruction could become a step.
+4. **Identify atomic mechanics.** Each time the LLM succeeds at something because of how you prompted it, extract that as a repeatable operation. Maybe one step is about getting good imagery, another about choosing a conceit, another about fetching context on the author.
+5. **Build a sequence.** Arrange the steps into an order. Open new threads to test whether the order matters. Think about what's the equivalent of a policy document for making a sonnet — what's the equivalent of customer data?
+6. **Add loops and judges.** Maybe you want an LLM that judges the quality of the sonnet and provides pros and cons — and you want to run that not once but *N* times. The sequence doesn't have to be linear.
+7. **Present.** Share the chain, the final sonnet, and an argument for why it works. If you had to leave this sequence as a stand-alone machine — no human in the loop — what would it be?
+
+Context engineering and prompt chaining are not magic. They are sequences of focused operations — each one doing one thing, each one passing something to the next. The rest of this page gives you the tools to formalize what you practiced in the workshop.
 
 ---
 
@@ -37,7 +203,7 @@ Context engineering and prompt chaining are not magic. They are sequences of foc
 
 Before you start building, it helps to have a skeleton — a way to organize the operations in your chain before you decide what goes where. Frameworks from other fields give you a starting vocabulary: structures already tested for moving raw material through staged refinement.
 
-Pick one below (or find your own), slot operations into its slots, then decide on movement: do the operations chain linearly, loop, branch, or hand control back to you? Plan it on paper before you write any code.
+You do not need to use these frameworkds, but we want to show you over and over again how you can pull expertise and structures from other fields to build your own "machines" for text production. You can continue to practice prompt chaining by picking a framework below (or find your own), slot operations into its slots, then decide on movement: do the operations chain linearly, loop, branch, or hand control back to you? Plan it on paper before you write any code.
 
 ---
 
@@ -322,6 +488,6 @@ The notebook implements the linear chain. Your assignment is to treat it as a st
 
 ## Be Creative
 
-As long as your chain combines operations and you can articulate what each step contributed — there is no wrong answer here. 
+As long as your chain combines operations and you can articulate what each step contributed — there is no wrong answer here.
 
 ---

@@ -135,4 +135,4 @@ Bring your generated lyrics and your reflections to the workshop. We'll use them
 
 ---
 
-*Further reading: [Prompt Chaining: A Practical Guide](/reading/prompt-chaining-guide)*
+*Further reading: [Workshop](/reading/prompt-chaining-guide)*

@@ -14,7 +14,7 @@ interface DocsSidebarProps {
 const PHASE_LABELS: Record<number, string> = {
   1: 'Pre-Workshop',
   2: 'Workshop',
-  3: 'Post-Workshop',
+  3: 'Next Steps',
 };
 
 export function DocsSidebar({ nav, onNavigate }: DocsSidebarProps) {
@@ -29,8 +29,7 @@ export function DocsSidebar({ nav, onNavigate }: DocsSidebarProps) {
     return acc;
   }, {});
 
-  // Only show pre-workshop content for now; workshop + post-workshop hidden until session
-  const phases = [1];
+  const phases = [1, 2, 3];
 
   return (
     <div className="h-full overflow-y-auto p-5 flex flex-col gap-6">

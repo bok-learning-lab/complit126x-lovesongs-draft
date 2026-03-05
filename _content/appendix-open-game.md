@@ -9,7 +9,7 @@ description: "The intellectual history behind prompt chaining: Calvino, Flusser,
 
 # Appendix: The Chain as Open Game
 
-*Supplementary context for the [Prompt Chaining Guide](/reading/prompt-chaining-guide). The guide itself is practical instruction; this is the intellectual history underneath it.*
+*Supplementary context for the [Workshop](/reading/prompt-chaining-guide). The workshop page is practical instruction; this is the intellectual history underneath it.*
 
 ---
 
@@ -67,4 +67,4 @@ Calvino's combinatorial machine does not dispense with the author; it redefines 
 
 ---
 
-*Back to: [Prompt Chaining Guide](/reading/prompt-chaining-guide)*
+*Back to: [Workshop](/reading/prompt-chaining-guide)*

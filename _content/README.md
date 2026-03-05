@@ -12,7 +12,7 @@ This section contains the readings and workshop guides for the **Love in Context
 
 - **[Learning Lab Intro to Context Engineering](/reading/learning-lab-intro-to-context-engineering)** — the assigned reading. What does an LLM actually see? Why does the spider chart produce flat lyrics? What is prompt chaining, and how does it help?
 
-- **[Prompt Chaining: A Practical Guide](/reading/prompt-chaining-guide)** — workshop supplement. Step-by-step Python code for building a four-step chain that generates lyrics with actual poetic texture, not just scores.
+- **[Workshop](/reading/prompt-chaining-guide)** — recap of the in-class session, frameworks for organizing your chain, and a practical guide to building it step by step.
 
 ## Before the workshop
 
