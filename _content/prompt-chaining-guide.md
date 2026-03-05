@@ -482,12 +482,16 @@ Poems ──▶ [Build Context] ─────────────┼──
                                        └──▶ [Generate: duet]         ──▶ Track 3
 ```
 
-The notebook implements the linear chain. Your assignment is to treat it as a starting point. Every pattern above is five to fifteen lines of code built from the same API call you already have — and there are more combinations than any diagram can show. You get to build with language; the only real constraints are what code can do and what a language model can do well. Within those limits, go further than the diagram.
+The notebook implements the linear chain. Your assignment is to treat it as a starting point. Every pattern above is built from the same operations in the table above — and there are more combinations than any diagram can show.
 
 ---
 
-## Be Creative
+## What's Next
 
-As long as your chain combines operations and you can articulate what each step contributed — there is no wrong answer here.
+Head to **[Next Steps](/reading/next-steps)** for three ways to build your chain for the assignment:
+
+1. **Conversational chat** — do it in stages in any chat interface, saving each step's output. Best for focusing on the writing rather than the code.
+2. **Python notebooks** — a base notebook that implements the chain above, plus **workshop notebooks for each poet** built from your group's prompt chains. Your group's specific architecture is already translated into runnable Python — use it as a starting point.
+3. **Something custom** — build your own tool, use a different SDK, or design a workflow we haven't thought of. The Learning Lab can help.
 
 ---
