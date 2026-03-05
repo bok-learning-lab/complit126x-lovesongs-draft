@@ -45,7 +45,8 @@ export function getContentNavigation(): ContentItem[] {
 
     const slug = file.replace(/\.(mdx?)$/, '');
     // Skip folder index files and the merged workshop-overview (content now in prompt-chaining-guide)
-    if (slug === 'README' || slug === 'index' || slug === 'workshop-overview') continue;
+    // Skip folder index files, merged workshop-overview, and overview (hardcoded in sidebar)
+    if (slug === 'README' || slug === 'index' || slug === 'workshop-overview' || slug === 'overview') continue;
 
     const filePath = path.join(CONTENT_ROOT, file);
     const raw = fs.readFileSync(filePath, 'utf-8');
