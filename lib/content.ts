@@ -44,9 +44,8 @@ export function getContentNavigation(): ContentItem[] {
     if (!isMarkdown) continue;
 
     const slug = file.replace(/\.(mdx?)$/, '');
-    // Skip folder index files and the merged workshop-overview (content now in prompt-chaining-guide)
-    // Skip folder index files, merged workshop-overview, and overview (hardcoded in sidebar)
-    if (slug === 'README' || slug === 'index' || slug === 'workshop-overview' || slug === 'overview') continue;
+    // Skip non-nav files: index files, merged workshop-overview, hardcoded overview, and intro (duplicative of workshop)
+    if (slug === 'README' || slug === 'index' || slug === 'workshop-overview' || slug === 'overview' || slug === 'learning-lab-intro-to-context-engineering') continue;
 
     const filePath = path.join(CONTENT_ROOT, file);
     const raw = fs.readFileSync(filePath, 'utf-8');
